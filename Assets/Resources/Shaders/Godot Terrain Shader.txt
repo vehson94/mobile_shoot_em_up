@@ -1,0 +1,66 @@
+shader_type canvas_item;
+
+// Shader script
+// Put in a sprite where you have set it's texture set to a noise map. Turn off normalization and turn off generate mipmaps.
+
+uniform int amount = 990;
+//The amount by which the pixelation happens - lower : more pixelly, higher, less pixelly
+
+const float deepSeaThreshold = 0.4;
+const float seaThreshold = 0.47;
+const float shallowSeaThreshold = 0.54;
+const float sandThreshold = 0.555;
+const float grassThreshold = 0.6;
+const float forestThreshold = 0.65;
+const float mountainThreshold = 0.71;
+const float snowThreshold = 0.9;
+
+// Noise values are between 0 and 1. These are the points where if the value is above the said value, it turns to said biome. Can be edited.
+
+const vec4 DEEP_SEA = vec4(0.5647, 0.8784, 0.9373, 1);
+const vec4 SEA = vec4(0.678, 0.910, 0.957, 1.0);
+const vec4 SHALLOW_SEA = vec4(0.792, 0.941, 0.976, 1.0);
+const vec4 SAND = vec4(1.0, 0.953, 0.690, 1.0);
+const vec4 GRASS = vec4(0.654, 0.788, 0.341, 1.0);
+const vec4 FOREST = vec4(0.416, 0.600, 0.306, 1.0);
+const vec4 MOUNTAIN = vec4(0.424, 0.459, 0.493, 1.0);
+const vec4 SNOW = vec4(1.0, 1.0, 1.0, 1.0);
+
+// The RGBA (Red, Green, Blue, Alpha / Transparency) colour values of each biome.
+
+void vertex() {
+}
+
+//The Fragment shader runs on each pixel
+
+void fragment() {
+	vec2 grid_uv = round(UV * float(amount)) / float(amount);
+	// An alternative UV to the normal UV made for the pixelly effects. Although the actual terrain generation is, The pixelart effect specifically IS NOT MY WORK - Godot Shaders has credit for it
+	vec4 c = texture(TEXTURE, grid_uv);
+	COLOR = vec4(1.0f);
+	if(c.r < deepSeaThreshold) {
+	COLOR = DEEP_SEA ;
+	}
+	else if(c.r < seaThreshold) {
+	COLOR = SEA ;
+	}
+	else if(c.r < shallowSeaThreshold) {
+	COLOR = SHALLOW_SEA ;
+	}
+	else if(c.r < sandThreshold) {
+	COLOR = SAND ;
+	}
+	else if(c.r < grassThreshold) {
+	COLOR = GRASS ;
+	}
+	else if(c.r < forestThreshold) {
+	COLOR = FOREST ;
+	}
+	else if(c.r < mountainThreshold) {
+	COLOR = MOUNTAIN ;
+	}
+	else if(c.r < snowThreshold) {
+	COLOR = SNOW ;
+	// These if statements ask if the original texture's (the noise map) red value (measure of how "high" it should be) is lower than the threshold, set it's colour to the appropraite one.
+	}
+}
